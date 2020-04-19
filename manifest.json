@@ -1,17 +1,19 @@
 {
-    "name": "AddQueryParam",
-    "version": "1.0",
-    "description": "Chrome extension to add the query parms to the url",
-    "author": "Ayush Katiyar",
-    "browser_action": {
-      "default_icon": "icons/extension_icon-64.png",
-      "default_popup": "popup.html",
-      "default_title": "AddQueryParam"
-    },
-    "icons": {
-      "64": "icons/extension_icon-64.png"
-    },
-    "permissions": ["tabs"],
-    "manifest_version": 2
-  }
-  
+  "name": "QueryParam",
+  "version": "1.1",
+  "description": "Chrome extension to add action buttons by adding query parameters to the url",
+  "author": "Ayush Katiyar, Nitin Raturi",
+  "browser_action": {
+    "default_icon": "icons/logo2.png",
+    "default_popup": "popup.html",
+    "default_title": "QueryParam"
+  },
+  "icons": {
+    "64": "icons/logo2.png"
+  },
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+  "manifest_version": 2
+}
