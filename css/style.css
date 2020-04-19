@@ -4,28 +4,28 @@
 
 .btn {
   display: inline-block;
-  font-size: 20px;
+  /* font-size: 20px; */
   text-align: center;
   padding: 8px;
-  margin: 5px;
-  height: 30px;
-  min-width: 120px;
+  /* margin: 5px; */
+  /* height: 30px; */
+  /* min-width: 120px; */
   background: #fdcfcf;
   border: none;
   outline: none;
   color: black;
   font-family: inherit;
-  font-weight: 400;
-  font-size: 14px;
-  border-radius: 3px;
-  box-shadow: 0 5px 0px #fdcfcf;
-  border-bottom: 2px solid #fdcfcf;
+  /* font-weight: 400; */
+  /* font-size: 14px; */
+  /* border-radius: 3px; */
+  /* /* box-shadow: 0 5px 0px #fdcfcf; */
+  /* border-bottom: 2px solid #fdcfcf; */
 }
 .btn:hover {
   background: #d32f2f;
   color: #fff;
-  box-shadow: 0 4px 1px #d32f2f;
-  border-bottom: 2px solid #d32f2f;
+  box-shadow: 0 2px 1px #d32f2f;
+  /* border-bottom: 2px solid #d32f2f; */
   transition: all 0.1s ease-in;
 }
 .btn:active {
@@ -34,7 +34,7 @@
   box-shadow: none;
 }
 
-.form-inline, .action-group, .header{
+.form-inline, .created-actions-container, .header{
   display: flex;
   flex-flow: row wrap;
   align-items: center;
@@ -67,4 +67,12 @@
 .success{
   color: green;
   display: none;
+}
+
+.action-group{
+  margin: 5px;
+}
+
+.btnDelete{
+  background-color: red;
 }

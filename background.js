@@ -48,7 +48,7 @@
             if (this.actions.length > 0) {
                 for (let i = 0; i < actions.length; i++) {
                     if (this.actions[i].action_name == this.state.action_name) {
-                        this.state.error = "Action with this name already exisits, please use a unique name";
+                        this.state.error = "Action with this name already exists, please use a unique name";
                     }
                     else {
                         this.state.error = null;
@@ -70,17 +70,27 @@
 
     // Responsible for loading saved action buttons
     initializeActionButtons = () => {
-        document.getElementById('action-group').innerHTML = "";
+        document.getElementById('created-actions-container').innerHTML = "";
         if (this.actions.length > 0) {
             document.getElementById('action_status_label').innerHTML = "Your Actions"
             for (let i = 0; i < this.actions.length; i++) {
+                let div = document.createElement('div');
+                div.className = "action-group";
                 let btn = document.createElement('button');
                 btn.innerHTML = this.actions[i].action_name;
                 btn.className = "btn";
                 btn.addEventListener('click', () => {
                     this.change_mode(this.actions[i].action_value);
                 })
-                document.getElementById('action-group').appendChild(btn)
+                let btn2 = document.createElement('button');
+                btn2.innerHTML = "X"
+                btn2.className = "btn btnDelete";
+                btn2.addEventListener('click', () => {
+                    this.deleteAction(this.actions[i].action_name);
+                })
+                div.appendChild(btn)
+                div.appendChild(btn2)
+                document.getElementById('created-actions-container').appendChild(div)
             }
         } else {
             document.getElementById('action_status_label').innerHTML = "No actions Created Yet !"
@@ -101,8 +111,24 @@
         this.actions.push(current_action);
         chrome.storage.sync.set({ [this.localStorageKey]: JSON.stringify(this.actions) }, () => {
             document.getElementById('action_success').style.display = 'block';
+            document.getElementById('action_success').innerHTML = 'Successfully Created Action.';
             document.getElementById('action_name').value = "";
             document.getElementById('action_value').value = "";
+            this.initializeActionButtons();
+
+            setTimeout(() => {
+                document.getElementById('action_success').style.display = 'none';
+            }, 3000)
+        });
+    }
+
+    deleteAction = (name) => {
+        this.actions = this.actions.filter((action) => {
+            return action.action_name != name
+        })
+        chrome.storage.sync.set({ [this.localStorageKey]: JSON.stringify(this.actions) }, () => {
+            document.getElementById('action_success').style.display = 'block';
+            document.getElementById('action_success').innerHTML = 'Successfully Deleted Action: ' + name;
             this.initializeActionButtons();
 
             setTimeout(() => {
