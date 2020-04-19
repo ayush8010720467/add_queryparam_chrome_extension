@@ -1,65 +1,70 @@
-body {
-    width: 150px;
-    margin: 10px;
-    color: rgb(230, 203, 203) 0;
+.container {
+    width: 500px;
   }
-  button {
-    font-size: 20px;
-    text-align: center;
-  }
-  .url {
-    text-align: center;
-  }
-  
-  .title {
-    text-align: center;
-  }
-  .main {
-    text-align: center;
-  }
-  
-  .author {
-    text-align: center;
-  }
-  
-  #credits {
-    display: inline-block;
-    color: rgb(119, 119, 119);
-    padding: 1em;
-    font-size: 1em;
-  }
-  
-  #credits:hover {
-    color: blue;
-  }
-  
-  button {
-    display: inline-block;
-    padding: 8px;
-    margin: 5px;
-    height: 30px;
-    min-width: 120px;
-    background: #fdcfcf;
-    border: none;
-    outline: none;
-    color: black;
-    font-family: inherit;
-    font-weight: 400;
-    font-size: 14px;
-    border-radius: 3px;
-    box-shadow: 0 5px 0px #fdcfcf;
-    border-bottom: 2px solid #fdcfcf;
-  }
-  button:hover {
-    background: #d32f2f;
-    color: #fff;
-    box-shadow: 0 4px 1px #d32f2f;
-    border-bottom: 2px solid #d32f2f;
-    transition: all 0.1s ease-in;
-  }
-  button:active {
-    transform: translateY(4px);
-    border-bottom-width: 2px;
-    box-shadow: none;
-  }
-  
+
+.btn {
+  display: inline-block;
+  font-size: 20px;
+  text-align: center;
+  padding: 8px;
+  margin: 5px;
+  height: 30px;
+  min-width: 120px;
+  background: #fdcfcf;
+  border: none;
+  outline: none;
+  color: black;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 14px;
+  border-radius: 3px;
+  box-shadow: 0 5px 0px #fdcfcf;
+  border-bottom: 2px solid #fdcfcf;
+}
+.btn:hover {
+  background: #d32f2f;
+  color: #fff;
+  box-shadow: 0 4px 1px #d32f2f;
+  border-bottom: 2px solid #d32f2f;
+  transition: all 0.1s ease-in;
+}
+.btn:active {
+  transform: translateY(4px);
+  border-bottom-width: 2px;
+  box-shadow: none;
+}
+
+.form-inline, .action-group, .header{
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.form-inline input {
+  vertical-align: middle;
+  margin: 5px 10px 5px 0;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+/* Style the submit button */
+.form-inline button {
+  padding: 10px 20px;
+  background-color: dodgerblue;
+  border: 1px solid #ddd;
+  color: white;
+}
+
+.form-inline button:hover {
+  background-color: royalblue;
+}
+
+.error{
+  color:red
+}
+
+.success{
+  color: green;
+  display: none;
+}

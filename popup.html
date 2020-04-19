@@ -1,22 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>AddQueryParam</title>
-    <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>QueryParam</title>
+  <meta name="description" content="Chrome extension to add action buttons by adding query parameters to the url" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
-    <div class="row main">
-      <h2>Switch b/w dt and mobile</h2>
-      <div class="column url">
-        <button id="d-mode" class="btn draw-border">Desktop Mode</button>
-      </div>
-      <div class="column title">
-        <button id="m-mode" class="btn draw-border">Mobile Mode</button>
+  <div class="container">
+    <div class="header">
+      <img width="32px" src="icons/logo2.png" alt="logo">
+      <h3>QueryParam
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+      <p><a href="https://raturi.in/blog/queryparam-chrome-extension-tutorial/" target="_blank"> How to use?</a></p>
+      <p>&nbsp;&nbsp;&nbsp;&nbsp;Report - &nbsp;<a href="mailTo:develop@raturi.in" target="_blank">develop@raturi.in</a>
+      </p>
+    </div>
+    <form id="action-form" class="form-inline">
+      <input id="action_name" name="action_name" type="text" placeholder="Unique Action Name">
+      <input id="action_value" name="action_value" type="text" placeholder="Dont include ? eg: a=1&b=2">
+      <button type="submit" class="inline">+ Add</button>
+    </form>
+    <p id="action_error" class="error"></p>
+    <p id="action_success" class="success">Success Created Action.</p>
+    <hr>
+    <p id="action_status_label">Loading...</p>
+    <div class="created-actions-container">
+      <div id="action-group" class="action-group">
+
       </div>
     </div>
-    <script src="background.js"></script>
+  </div>
+  <script src="background.js"></script>
 </body>
+
 </html>
