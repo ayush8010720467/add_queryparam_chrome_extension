@@ -39,7 +39,7 @@ class Form {
         }
         else {
             if (this.actions.length > 0) {
-                for (let i = 0; i < actions.length; i++) {
+                for (let i = 0; i < this.actions.length; i++) {
                     if (this.actions[i].action_name == this.state.action_name) {
                         this.state.error = "Action with this name already exists, please use a unique name";
                     }
@@ -191,9 +191,8 @@ class Action{
 }
 (function () {
     chrome.tabs.getSelected(null, (tab) => {
-        let url = tab.url.split('?')[0];
         let id="action-form"
-        let form = new Form(url,document.getElementById(id));
+        let form = new Form(new URL(tab.url).hostname,document.getElementById(id));
         // Initializing 
         form.loadActions();
     });
