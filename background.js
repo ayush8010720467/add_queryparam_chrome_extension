@@ -94,7 +94,7 @@ class Form {
             document.getElementById('action_status_label').innerHTML = "Your Actions"
             for (let i = 0; i < this.actions.length; i++) {
                 // create a action object and then call the getAction function
-                let div = new Action(this.actions[i].action_name,this.actions[i].action_value).getAction();
+                let div = new Action(this.actions[i].action_name,this.actions[i].action_value, this).getAction();
                 document.getElementById('created-actions-container').appendChild(div)
             }
         } else{
@@ -125,9 +125,10 @@ class Form {
     }
 }
 class Action{
-    constructor(name,value){
+    constructor(name,value, parent){
         this.name = name;
         this.value = value;
+        this.parent = parent;
     }
     getAction() {
         let div = document.createElement('div');
@@ -142,8 +143,7 @@ class Action{
         btn2.innerHTML = "X"
         btn2.className = "btn btnDelete";
         btn2.addEventListener('click', () => {
-            // this.deleteAction(this.name);
-            console.log("Delete Action to be performed");
+            this.parent.deleteAction(this.name);
         })
         div.appendChild(btn)
         div.appendChild(btn2)
