@@ -1,63 +1,5 @@
 (function () {
-
-    let action_form = document.getElementById("action-form");
-
     
-    
-
-    // Responsible for loading saved action buttons
-    initializeActionButtons = () => {
-        document.getElementById('created-actions-container').innerHTML = "";
-        if (this.actions.length > 0) {
-            document.getElementById('action_status_label').innerHTML = "Your Actions"
-            for (let i = 0; i < this.actions.length; i++) {
-                let div = document.createElement('div');
-                div.className = "action-group";
-                let btn = document.createElement('button');
-                btn.innerHTML = this.actions[i].action_name;
-                btn.className = "btn";
-                btn.addEventListener('click', () => {
-                    this.change_mode(this.actions[i].action_value);
-                })
-                let btn2 = document.createElement('button');
-                btn2.innerHTML = "X"
-                btn2.className = "btn btnDelete";
-                btn2.addEventListener('click', () => {
-                    this.deleteAction(this.actions[i].action_name);
-                })
-                div.appendChild(btn)
-                div.appendChild(btn2)
-                document.getElementById('created-actions-container').appendChild(div)
-            }
-        } else {
-            document.getElementById('action_status_label').innerHTML = "No actions Created Yet !"
-        }
-    }
-
-    loadActions = () => {
-        chrome.storage.sync.get([this.localStorageKey], (result) => {
-            if (result.hasOwnProperty(this.localStorageKey)) {
-                this.actions = JSON.parse(result[this.localStorageKey]);
-            }
-            this.initializeActionButtons()
-        });
-    }
-    deleteAction = (name) => {
-        this.actions = this.actions.filter((action) => {
-            return action.action_name != name
-        })
-        chrome.storage.sync.set({ [this.localStorageKey]: JSON.stringify(this.actions) }, () => {
-            document.getElementById('action_success').style.display = 'block';
-            document.getElementById('action_success').innerHTML = 'Successfully Deleted Action: ' + name;
-            this.initializeActionButtons();
-
-            setTimeout(() => {
-                document.getElementById('action_success').style.display = 'none';
-            }, 3000)
-        });
-    }
-
-
 }())
 
 // Initializing 
@@ -217,7 +159,40 @@ class Form {
             }, 3000)
         });
     }
+    // Responsible for loading saved action buttons
     initializeActionButtons = () => {
-        
+        document.getElementById('created-actions-container').innerHTML = "";
+        if (this.actions.length > 0) {
+            document.getElementById('action_status_label').innerHTML = "Your Actions"
+            for (let i = 0; i < this.actions.length; i++) {
+                // create a action object and then call the getAction function
+                let div = new Action(name,value).getAction();
+                document.getElementById('created-actions-container').appendChild(div)
+            }
+        } else{
+            document.getElementById('action_status_label').innerHTML = "No actions Created Yet !"
+        }
+    }
+    loadActions = () => {
+        chrome.storage.sync.get([this.localStorageKey], (result) => {
+            if (result.hasOwnProperty(this.localStorageKey)) {
+                this.actions = JSON.parse(result[this.localStorageKey]);
+            }
+            this.initializeActionButtons()
+        });
+    }
+    deleteAction = (name) => {
+        this.actions = this.actions.filter((action) => {
+            return action.action_name != name
+        })
+        chrome.storage.sync.set({ [this.localStorageKey]: JSON.stringify(this.actions) }, () => {
+            document.getElementById('action_success').style.display = 'block';
+            document.getElementById('action_success').innerHTML = 'Successfully Deleted Action: ' + name;
+            this.initializeActionButtons();
+
+            setTimeout(() => {
+                document.getElementById('action_success').style.display = 'none';
+            }, 3000)
+        });
     }
 }
