@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>QueryParam</title>
+    <script src="options.js"></script>
+    <link rel="stylesheet" href="css/options_style.css" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    <div id="heading">
+        <img width="50px" style="display: inline-block;vertical-align: middle;" src="icons/logo2.png" alt="logo"><h1 style="display: inline-block;vertical-align: middle;" >QueryParam</h1>
+    </div>
+    <div id="setVisibility">
+        <h1>Select Form to be shown</h1>
+        <!-- Check box for the selecting the form to be displayed in the popup.html -->
+    </div>
+    <div id="newForm">
+
+        <h1>Create New Form</h1>
+            <form id="action-form" class="form-inline">
+                    <input id="form_name" name="form_name" type="text" placeholder="Unique Form Name">
+                    <input id="action_name" name="action_name" type="text" placeholder="Unique Action Name">
+                    <input id="action_value" name="action_value" type="text" placeholder="Dont include ? eg: a=1&b=2">
+                    <button type="submit" class="inline">+ Add</button>
+                  </form>
+                  <p id="action_error" class="error"></p>
+                  <p id="action_success" class="success"></p>
+                  <hr>
+                  <p id="action_status_label">Loading...</p>
+                  <div id="created-actions-container" class="created-actions-container">
+              
+                  </div>
+    </div>
+</body>
+</html>
