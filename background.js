@@ -147,27 +147,36 @@
         }
     }
 
-    getParamsDict = (p_string) => {
-        let params = p_string.replace('?', '').split("&");
-        let p_dict = {}
-        for (let i = 0; i < params.length; i++) {
-            let param = params[i].split("=")
-            p_dict[param[0]] = param[1]
-        }
-        return p_dict;
-    }
+}())
 
-    convertObjectToUrlString = (obj) => {
-        let url = "?"
-        for (let [key, value] of Object.entries(obj)) {
-            url += `${key}=${value}&`;
-        }
-        if (url.length > 1) {
-            url = url.substr(0, url.length - 1);
-        }
-        return url;
-    }
+// Initializing 
+loadActions();
 
+class Action{
+    constructor(name,value){
+        this.name = name;
+        this.value = value;
+    }
+    getAction() {
+        let div = document.createElement('div');
+        div.className = "action-group";
+        let btn = document.createElement('button');
+        btn.innerHTML = this.name;
+        btn.className = "btn";
+        btn.addEventListener('click', () => {
+            this.change_mode(this.value);
+        })
+        let btn2 = document.createElement('button');
+        btn2.innerHTML = "X"
+        btn2.className = "btn btnDelete";
+        btn2.addEventListener('click', () => {
+            // this.deleteAction(this.name);
+            console.log("Delete Action to be performed");
+        })
+        div.appendChild(btn)
+        div.appendChild(btn2)
+        return div;
+    }
     change_mode = (mode) => {
         chrome.tabs.getSelected(null, (tab) => {
 
@@ -187,7 +196,24 @@
             chrome.tabs.update(tab.id, { url: newUrl })
         });
     }
-}())
-
-// Initializing 
-loadActions();
+    
+    getParamsDict = (p_string) => {
+        let params = p_string.replace('?', '').split("&");
+        let p_dict = {}
+        for (let i = 0; i < params.length; i++) {
+            let param = params[i].split("=")
+            p_dict[param[0]] = param[1]
+        }
+        return p_dict;
+    }
+    convertObjectToUrlString = (obj) => {
+        let url = "?"
+        for (let [key, value] of Object.entries(obj)) {
+            url += `${key}=${value}&`;
+        }
+        if (url.length > 1) {
+            url = url.substr(0, url.length - 1);
+        }
+        return url;
+    }
+}
