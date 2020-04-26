@@ -1,72 +1,9 @@
 (function () {
 
     let action_form = document.getElementById("action-form");
-    this.state = {
-        action_name: null,
-        action_value: null,
-        action_error: null
-    }
-    this.actions = [];
-    this.localStorageKey = "QueryParamData";
 
-    // Attaching the event handlers
-    action_form.addEventListener("submit", (e) => this.submitHandler(e));
-    action_form.addEventListener("change", (e) => this.changeHandler(e));
-
-    // Handle form input change
-    changeHandler = (e) => {
-        this.state = {
-            ...this.state,
-            [e.target.name]: e.target.value
-        }
-    }
-
-    validateQueryParam = (params) => {
-        params = params.replace('?', '');
-        params = params.split('&');
-
-        let re = /([\w\d])+?=([\w\d])+/
-        for (let i = 0; i < params.length; i++) {
-            if (re.test(params[i]) == false) {
-                return false;
-            }
-        }
-        return true;
-    }
-    // Validate the form and show error on dom
-    validateForm = () => {
-        if (this.state.action_value === null || this.state.action_value.trim() === "") {
-            this.state.error = "Action Value is required";
-        }
-        else if (validateQueryParam(this.state.action_value) == false) {
-            this.state.error = "Invalid Action Value format";
-        }
-        else if (this.state.action_name === null || this.state.action_name.trim() === "") {
-            this.state.error = "Action Name is required";
-        }
-        else {
-            if (this.actions.length > 0) {
-                for (let i = 0; i < actions.length; i++) {
-                    if (this.actions[i].action_name == this.state.action_name) {
-                        this.state.error = "Action with this name already exists, please use a unique name";
-                    }
-                    else {
-                        this.state.error = null;
-                    }
-                }
-            } else {
-                this.state.error = null;
-            }
-        }
-
-        if (this.state.error != null) {
-            document.getElementById('action_error').innerHTML = this.state.error;
-            return false;
-        } else {
-            document.getElementById('action_error').innerHTML = "";
-            return true;
-        }
-    }
+    
+    
 
     // Responsible for loading saved action buttons
     initializeActionButtons = () => {
@@ -105,23 +42,6 @@
             this.initializeActionButtons()
         });
     }
-
-    setAction = () => {
-        let current_action = { action_name: this.state.action_name, action_value: this.state.action_value }
-        this.actions.push(current_action);
-        chrome.storage.sync.set({ [this.localStorageKey]: JSON.stringify(this.actions) }, () => {
-            document.getElementById('action_success').style.display = 'block';
-            document.getElementById('action_success').innerHTML = 'Successfully Created Action.';
-            document.getElementById('action_name').value = "";
-            document.getElementById('action_value').value = "";
-            this.initializeActionButtons();
-
-            setTimeout(() => {
-                document.getElementById('action_success').style.display = 'none';
-            }, 3000)
-        });
-    }
-
     deleteAction = (name) => {
         this.actions = this.actions.filter((action) => {
             return action.action_name != name
@@ -137,15 +57,6 @@
         });
     }
 
-
-    // Responsible for form submit event
-    submitHandler = (e) => {
-        e.preventDefault();
-        let isValid = this.validateForm();
-        if (isValid === true) {
-            this.setAction();
-        }
-    }
 
 }())
 
@@ -215,5 +126,98 @@ class Action{
             url = url.substr(0, url.length - 1);
         }
         return url;
+    }
+}
+class Form {
+    constructor(name, id) {
+        this.name = name;
+        this.action_form = document.getElementById(id);
+        this.state = {
+            action_name: null,
+            action_value: null,
+            action_error: null
+        }
+        this.actions = [];
+        this.localStorageKey = this.name;
+        action_form.addEventListener("submit", (e) => this.submitHandler(e));
+        action_form.addEventListener("change", (e) => this.changeHandler(e));
+    }
+    submitHandler = (e) => {
+        e.preventDefault();
+        let isValid = this.validateForm();
+        if (isValid === true) {
+            this.setAction();
+        }
+    }
+    // Handle form input change
+    changeHandler = (e) => {
+        this.state = {
+            ...this.state,
+            [e.target.name]: e.target.value
+        }
+    }
+    // Validate the form and show error on dom
+    validateForm = () => {
+        if (this.state.action_value === null || this.state.action_value.trim() === "") {
+            this.state.error = "Action Value is required";
+        }
+        else if (validateQueryParam(this.state.action_value) == false) {
+            this.state.error = "Invalid Action Value format";
+        }
+        else if (this.state.action_name === null || this.state.action_name.trim() === "") {
+            this.state.error = "Action Name is required";
+        }
+        else {
+            if (this.actions.length > 0) {
+                for (let i = 0; i < actions.length; i++) {
+                    if (this.actions[i].action_name == this.state.action_name) {
+                        this.state.error = "Action with this name already exists, please use a unique name";
+                    }
+                    else {
+                        this.state.error = null;
+                    }
+                }
+            } else {
+                this.state.error = null;
+            }
+        }
+
+        if (this.state.error != null) {
+            document.getElementById('action_error').innerHTML = this.state.error;
+            return false;
+        } else {
+            document.getElementById('action_error').innerHTML = "";
+            return true;
+        }
+    }
+    validateQueryParam = (params) => {
+        params = params.replace('?', '');
+        params = params.split('&');
+
+        let re = /([\w\d])+?=([\w\d])+/
+        for (let i = 0; i < params.length; i++) {
+            if (re.test(params[i]) == false) {
+                return false;
+            }
+        }
+        return true;
+    }
+    setAction = () => {
+        let current_action = { action_name: this.state.action_name, action_value: this.state.action_value }
+        this.actions.push(current_action);
+        chrome.storage.sync.set({ [this.localStorageKey]: JSON.stringify(this.actions) }, () => {
+            document.getElementById('action_success').style.display = 'block';
+            document.getElementById('action_success').innerHTML = 'Successfully Created Action.';
+            document.getElementById('action_name').value = "";
+            document.getElementById('action_value').value = "";
+            this.initializeActionButtons();
+
+            setTimeout(() => {
+                document.getElementById('action_success').style.display = 'none';
+            }, 3000)
+        });
+    }
+    initializeActionButtons = () => {
+        
     }
 }
