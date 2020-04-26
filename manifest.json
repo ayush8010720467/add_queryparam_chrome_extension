@@ -11,9 +11,11 @@
   "icons": {
     "64": "icons/logo2.png"
   },
+  "options_page": "options.html",
   "permissions": [
     "tabs",
-    "storage"
+    "storage",
+    "notifications"
   ],
   "manifest_version": 2
 }
