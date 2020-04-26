@@ -1,79 +1,7 @@
-(function () {
-    
-}())
-
-// Initializing 
-loadActions();
-
-class Action{
-    constructor(name,value){
-        this.name = name;
-        this.value = value;
-    }
-    getAction() {
-        let div = document.createElement('div');
-        div.className = "action-group";
-        let btn = document.createElement('button');
-        btn.innerHTML = this.name;
-        btn.className = "btn";
-        btn.addEventListener('click', () => {
-            this.change_mode(this.value);
-        })
-        let btn2 = document.createElement('button');
-        btn2.innerHTML = "X"
-        btn2.className = "btn btnDelete";
-        btn2.addEventListener('click', () => {
-            // this.deleteAction(this.name);
-            console.log("Delete Action to be performed");
-        })
-        div.appendChild(btn)
-        div.appendChild(btn2)
-        return div;
-    }
-    change_mode = (mode) => {
-        chrome.tabs.getSelected(null, (tab) => {
-
-            let url = tab.url.split('?')
-            let base = url[0];
-            let params = url.length > 1 ? url[1] : null
-
-            m_dict = this.getParamsDict(mode)
-            p_dict = {}
-            if (params != null) {
-                p_dict = this.getParamsDict(params);
-            }
-
-            params = { ...p_dict, ...m_dict };
-            params = this.convertObjectToUrlString(params)
-            newUrl = base + params
-            chrome.tabs.update(tab.id, { url: newUrl })
-        });
-    }
-    
-    getParamsDict = (p_string) => {
-        let params = p_string.replace('?', '').split("&");
-        let p_dict = {}
-        for (let i = 0; i < params.length; i++) {
-            let param = params[i].split("=")
-            p_dict[param[0]] = param[1]
-        }
-        return p_dict;
-    }
-    convertObjectToUrlString = (obj) => {
-        let url = "?"
-        for (let [key, value] of Object.entries(obj)) {
-            url += `${key}=${value}&`;
-        }
-        if (url.length > 1) {
-            url = url.substr(0, url.length - 1);
-        }
-        return url;
-    }
-}
 class Form {
-    constructor(name, id) {
+    constructor(name, action_form) {
         this.name = name;
-        this.action_form = document.getElementById(id);
+        this.action_form = action_form;
         this.state = {
             action_name: null,
             action_value: null,
@@ -103,7 +31,7 @@ class Form {
         if (this.state.action_value === null || this.state.action_value.trim() === "") {
             this.state.error = "Action Value is required";
         }
-        else if (validateQueryParam(this.state.action_value) == false) {
+        else if (this.validateQueryParam(this.state.action_value) == false) {
             this.state.error = "Invalid Action Value format";
         }
         else if (this.state.action_name === null || this.state.action_name.trim() === "") {
@@ -166,7 +94,7 @@ class Form {
             document.getElementById('action_status_label').innerHTML = "Your Actions"
             for (let i = 0; i < this.actions.length; i++) {
                 // create a action object and then call the getAction function
-                let div = new Action(name,value).getAction();
+                let div = new Action(this.actions[i].action_name,this.actions[i].action_value).getAction();
                 document.getElementById('created-actions-container').appendChild(div)
             }
         } else{
@@ -196,3 +124,77 @@ class Form {
         });
     }
 }
+class Action{
+    constructor(name,value){
+        this.name = name;
+        this.value = value;
+    }
+    getAction() {
+        let div = document.createElement('div');
+        div.className = "action-group";
+        let btn = document.createElement('button');
+        btn.innerHTML = this.name;
+        btn.className = "btn";
+        btn.addEventListener('click', () => {
+            this.change_mode(this.value);
+        })
+        let btn2 = document.createElement('button');
+        btn2.innerHTML = "X"
+        btn2.className = "btn btnDelete";
+        btn2.addEventListener('click', () => {
+            // this.deleteAction(this.name);
+            console.log("Delete Action to be performed");
+        })
+        div.appendChild(btn)
+        div.appendChild(btn2)
+        return div;
+    }
+    change_mode = (mode) => {
+        chrome.tabs.getSelected(null, (tab) => {
+
+            let url = tab.url.split('?')
+            let base = url[0];
+            let params = url.length > 1 ? url[1] : null
+
+            let m_dict = this.getParamsDict(mode)
+            let p_dict = {}
+            if (params != null) {
+                p_dict = this.getParamsDict(params);
+            }
+
+            params = { ...p_dict, ...m_dict };
+            params = this.convertObjectToUrlString(params)
+            let newUrl = base + params
+            chrome.tabs.update(tab.id, { url: newUrl })
+        });
+    }
+    
+    getParamsDict = (p_string) => {
+        let params = p_string.replace('?', '').split("&");
+        let p_dict = {}
+        for (let i = 0; i < params.length; i++) {
+            let param = params[i].split("=")
+            p_dict[param[0]] = param[1]
+        }
+        return p_dict;
+    }
+    convertObjectToUrlString = (obj) => {
+        let url = "?"
+        for (let [key, value] of Object.entries(obj)) {
+            url += `${key}=${value}&`;
+        }
+        if (url.length > 1) {
+            url = url.substr(0, url.length - 1);
+        }
+        return url;
+    }
+}
+(function () {
+    chrome.tabs.getSelected(null, (tab) => {
+        let url = tab.url.split('?')[0];
+        let id="action-form"
+        let form = new Form(url,document.getElementById(id));
+        // Initializing 
+        form.loadActions();
+    });
+}())
