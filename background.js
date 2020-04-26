@@ -1,18 +1,24 @@
-(function () {
-
-    let action_form = document.getElementById("action-form");
-    this.state = {
-        action_name: null,
-        action_value: null,
-        action_error: null
+class Form {
+    constructor(name, action_form) {
+        this.name = name;
+        this.action_form = action_form;
+        this.state = {
+            action_name: null,
+            action_value: null,
+            action_error: null
+        }
+        this.actions = [];
+        this.localStorageKey = this.name;
+        action_form.addEventListener("submit", (e) => this.submitHandler(e));
+        action_form.addEventListener("change", (e) => this.changeHandler(e));
     }
-    this.actions = [];
-    this.localStorageKey = "QueryParamData";
-
-    // Attaching the event handlers
-    action_form.addEventListener("submit", (e) => this.submitHandler(e));
-    action_form.addEventListener("change", (e) => this.changeHandler(e));
-
+    submitHandler = (e) => {
+        e.preventDefault();
+        let isValid = this.validateForm();
+        if (isValid === true) {
+            this.setAction();
+        }
+    }
     // Handle form input change
     changeHandler = (e) => {
         this.state = {
@@ -20,25 +26,12 @@
             [e.target.name]: e.target.value
         }
     }
-
-    validateQueryParam = (params) => {
-        params = params.replace('?', '');
-        params = params.split('&');
-
-        let re = /([\w\d])+?=([\w\d])+/
-        for (let i = 0; i < params.length; i++) {
-            if (re.test(params[i]) == false) {
-                return false;
-            }
-        }
-        return true;
-    }
     // Validate the form and show error on dom
     validateForm = () => {
         if (this.state.action_value === null || this.state.action_value.trim() === "") {
             this.state.error = "Action Value is required";
         }
-        else if (validateQueryParam(this.state.action_value) == false) {
+        else if (this.validateQueryParam(this.state.action_value) == false) {
             this.state.error = "Invalid Action Value format";
         }
         else if (this.state.action_name === null || this.state.action_name.trim() === "") {
@@ -67,45 +60,18 @@
             return true;
         }
     }
+    validateQueryParam = (params) => {
+        params = params.replace('?', '');
+        params = params.split('&');
 
-    // Responsible for loading saved action buttons
-    initializeActionButtons = () => {
-        document.getElementById('created-actions-container').innerHTML = "";
-        if (this.actions.length > 0) {
-            document.getElementById('action_status_label').innerHTML = "Your Actions"
-            for (let i = 0; i < this.actions.length; i++) {
-                let div = document.createElement('div');
-                div.className = "action-group";
-                let btn = document.createElement('button');
-                btn.innerHTML = this.actions[i].action_name;
-                btn.className = "btn";
-                btn.addEventListener('click', () => {
-                    this.change_mode(this.actions[i].action_value);
-                })
-                let btn2 = document.createElement('button');
-                btn2.innerHTML = "X"
-                btn2.className = "btn btnDelete";
-                btn2.addEventListener('click', () => {
-                    this.deleteAction(this.actions[i].action_name);
-                })
-                div.appendChild(btn)
-                div.appendChild(btn2)
-                document.getElementById('created-actions-container').appendChild(div)
+        let re = /([\w\d])+?=([\w\d])+/
+        for (let i = 0; i < params.length; i++) {
+            if (re.test(params[i]) == false) {
+                return false;
             }
-        } else {
-            document.getElementById('action_status_label').innerHTML = "No actions Created Yet !"
         }
+        return true;
     }
-
-    loadActions = () => {
-        chrome.storage.sync.get([this.localStorageKey], (result) => {
-            if (result.hasOwnProperty(this.localStorageKey)) {
-                this.actions = JSON.parse(result[this.localStorageKey]);
-            }
-            this.initializeActionButtons()
-        });
-    }
-
     setAction = () => {
         let current_action = { action_name: this.state.action_name, action_value: this.state.action_value }
         this.actions.push(current_action);
@@ -121,7 +87,28 @@
             }, 3000)
         });
     }
-
+    // Responsible for loading saved action buttons
+    initializeActionButtons = () => {
+        document.getElementById('created-actions-container').innerHTML = "";
+        if (this.actions.length > 0) {
+            document.getElementById('action_status_label').innerHTML = "Your Actions"
+            for (let i = 0; i < this.actions.length; i++) {
+                // create a action object and then call the getAction function
+                let div = new Action(this.actions[i].action_name,this.actions[i].action_value, this).getAction();
+                document.getElementById('created-actions-container').appendChild(div)
+            }
+        } else{
+            document.getElementById('action_status_label').innerHTML = "No actions Created Yet !"
+        }
+    }
+    loadActions = () => {
+        chrome.storage.sync.get([this.localStorageKey], (result) => {
+            if (result.hasOwnProperty(this.localStorageKey)) {
+                this.actions = JSON.parse(result[this.localStorageKey]);
+            }
+            this.initializeActionButtons()
+        });
+    }
     deleteAction = (name) => {
         this.actions = this.actions.filter((action) => {
             return action.action_name != name
@@ -136,17 +123,52 @@
             }, 3000)
         });
     }
-
-
-    // Responsible for form submit event
-    submitHandler = (e) => {
-        e.preventDefault();
-        let isValid = this.validateForm();
-        if (isValid === true) {
-            this.setAction();
-        }
+}
+class Action{
+    constructor(name,value, parent){
+        this.name = name;
+        this.value = value;
+        this.parent = parent;
     }
+    getAction() {
+        let div = document.createElement('div');
+        div.className = "action-group";
+        let btn = document.createElement('button');
+        btn.innerHTML = this.name;
+        btn.className = "btn";
+        btn.addEventListener('click', () => {
+            this.change_mode(this.value);
+        })
+        let btn2 = document.createElement('button');
+        btn2.innerHTML = "X"
+        btn2.className = "btn btnDelete";
+        btn2.addEventListener('click', () => {
+            this.parent.deleteAction(this.name);
+        })
+        div.appendChild(btn)
+        div.appendChild(btn2)
+        return div;
+    }
+    change_mode = (mode) => {
+        chrome.tabs.getSelected(null, (tab) => {
 
+            let url = tab.url.split('?')
+            let base = url[0];
+            let params = url.length > 1 ? url[1] : null
+
+            let m_dict = this.getParamsDict(mode)
+            let p_dict = {}
+            if (params != null) {
+                p_dict = this.getParamsDict(params);
+            }
+
+            params = { ...p_dict, ...m_dict };
+            params = this.convertObjectToUrlString(params)
+            let newUrl = base + params
+            chrome.tabs.update(tab.id, { url: newUrl })
+        });
+    }
+    
     getParamsDict = (p_string) => {
         let params = p_string.replace('?', '').split("&");
         let p_dict = {}
@@ -156,7 +178,6 @@
         }
         return p_dict;
     }
-
     convertObjectToUrlString = (obj) => {
         let url = "?"
         for (let [key, value] of Object.entries(obj)) {
@@ -167,27 +188,13 @@
         }
         return url;
     }
-
-    change_mode = (mode) => {
-        chrome.tabs.getSelected(null, (tab) => {
-
-            let url = tab.url.split('?')
-            let base = url[0];
-            let params = url.length > 1 ? url[1] : null
-
-            m_dict = this.getParamsDict(mode)
-            p_dict = {}
-            if (params != null) {
-                p_dict = this.getParamsDict(params);
-            }
-
-            params = { ...p_dict, ...m_dict };
-            params = this.convertObjectToUrlString(params)
-            newUrl = base + params
-            chrome.tabs.update(tab.id, { url: newUrl })
-        });
-    }
+}
+(function () {
+    chrome.tabs.getSelected(null, (tab) => {
+        let url = tab.url.split('?')[0];
+        let id="action-form"
+        let form = new Form(url,document.getElementById(id));
+        // Initializing 
+        form.loadActions();
+    });
 }())
-
-// Initializing 
-loadActions();
